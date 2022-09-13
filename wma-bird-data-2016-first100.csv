@@ -1,0 +1,16 @@
+# Activity 1 Homework 
+
+download.file(url = "https://raw.githubusercontent.com/ericlind/data-mgmt-4-biologists/gh-pages/data/wma-bird-data-2016.csv", destfile = "data-raw/activity1.csv")
+
+read.csv("data-raw/activity1.csv")
+dataset_activity_1 <- read.csv("data-raw/activity1.csv")
+# The fields appear to be correct; the rows and columns are representative of the data which was expected to be seen in terms of the dataset"
+
+dataset_activity_1
+# What is provided is useful as it allows more insight into the data to be given to th viewer; it represents the data further, and can allow for more ease when it analysis of the data in certain cases.
+
+head(dataset_activity_1)
+
+dataset_activity_1[1:100, ]
+
+first_100_rows <- dataset_activity_1[1:100, ]
