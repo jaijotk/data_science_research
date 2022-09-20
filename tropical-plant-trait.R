@@ -44,7 +44,7 @@ summary(data_table$fruit_length)
 # A subset of data_table that contains the first 10 rows.
 firsttenrows <- data_table[1:10, ]
 firsttenrows
-write.csv(firsttenrows)
+write.csv(firsttenrows, file = "firsttenrows.csv")
 
 # A subset of data_table that contains the last 20 rows.
 lasttwentyrows <- data_table[137:157,]
