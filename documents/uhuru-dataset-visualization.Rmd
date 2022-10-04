@@ -100,6 +100,7 @@ ggplot(data = acacia, mapping = aes(x = CIRC, y = HEIGHT)) +
 We have the information on experimental treatment in the treatment column
 ```{r}
 acacia$TREATMENT
+getwd()
 ```
 
 Let's add information on treatment to our plot:
