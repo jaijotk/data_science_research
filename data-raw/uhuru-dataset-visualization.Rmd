@@ -1,0 +1,114 @@
+---
+title: "uhuru dataset"
+author: "Jai Jot Kaur"
+date: "2022-10-04"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      root.dir =
+"Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw")
+```
+
+### 1. Describing the data that we are using
+
+This experiment characterizes the effects of selectively removing the class of herbivores of the largest size from the system and determining how the direction and  the magnitude of the effects take shape from the variation that is seen in the precipitation regimes. There were three herbivore-exclusion treatments that were electrically fences and there was an unfensed control which were applied to contiguous 1-ha plot blocks. The fences treatments included "Mega", "Meso", and "Total." Mega had the exclusion of just the elephants and giraffes, Meso had the exclusion of both the megaherbivores and the mesoherbivores which were 40 kilograms or larger, and Total excludes all of the herbivores that were equal to or over 5 kilograms.  Replication of each of the blocks occurred three times at three various points of the 20 kilometer rainfall gradient and the data was presented spanning the years 2008 and 2013. 
+
+We are using the dataset from [this study](https://esapubs.org/archive/ecol/E095/064/metadata.php)
+
+Add a picture of an acacia
+
+### 2. Reading the data table into R
+
+First make sure that we are in the correct working directory, we use function 'getwd()'.
+
+[1] "/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw"
+in the setup chunk above.
+
+```{r}
+acacia <- read.csv(file = "/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw/ACACIA_DREPANOLOBIUM_SURVEY.txt", sep = "\t")
+```
+
+### 3. Explore our data set
+
+```{r}
+acacia
+head(acacia)
+summary(acacia)
+colnames(acacia)
+```
+
+Make sure that everything that is a number is actually numeric.
+
+One way to do this is with the function 'summary', and checking the type of data at each column visually
+
+Another way is using the type function
+
+```{r}
+typeof(acacia[,"HEIGHT"])
+
+acacia$HEIGHT
+```
+
+We identified a colimn that has problematic data. We need to fix it!
+
+We are going to read the data table again, but we are gonna assign 'NA' to the "dead" value that we do not want in our "HEIGHT" column
+
+```{r}
+getwd()
+acacia <- read.csv(file = "/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw/ACACIA_DREPANOLOBIUM_SURVEY.txt", sep = "\t", na.strings = "dead")
+```
+Let's check if this worked!
+
+```{r}
+typeof(acacia$HEIGHT)
+```
+
+### 4. Visualize our data
+
+For this, we are using the 'ggplot' package.
+Let's install it and load it:
+
+```{r}
+# install.packages("ggplot2")
+library("ggplot2")
+```
+
+Now we are gonna create our first plotting layer with the function 'ggplot'.
+
+```{r}
+colnames(acacia)
+acacia$CIRC
+```
+
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = HEIGHT)) +
+  geom_point(size = 1, color = "blue", alpha = 0.1) +
+  labs(x = "Circumference (cm)", y = "Height (cm)", title = "Data from UHURU Acacia Survey")
+```
+To rescale the plotting of the axis to log scale we use the function 'scale_y_log_10()'
+
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = HEIGHT)) +
+  geom_point(size = 1, color = "purple", alpha = 0.4) + labs(x = "Circumference (cm)", y = "Height (cm)", title = "Data from UHURU Acacia Survey") +
+  scale_x_log10() + scale_y_log10()
+```
+
+We have the information on experimental treatment in the treatment column
+```{r}
+acacia$TREATMENT
+```
+
+Let's add information on treatment to our plot:
+
+```{r}
+ggplot(data = acacia, mapping = aes (x = CIRC, y = HEIGHT, color = TREATMENT)) +
+  geom_point(size = 2, alpha = 0.5)
+```
+
+### 4.2 Visualize a statistical analysis of correlation
+
+
