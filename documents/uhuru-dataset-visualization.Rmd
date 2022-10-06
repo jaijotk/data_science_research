@@ -39,6 +39,22 @@ acacia
 head(acacia)
 summary(acacia)
 colnames(acacia)
+rownames(acacia)
+class(acacia$SURVEY)
+# the sapply function allows to apply a function to a list of objects
+# a data frame is a list of vectors of the same length
+sappply(acacia, class)
+viww(acacia)
+```
+
+How do I test where the computer is?
+
+```{r}
+getwd()
+r_proj_wd <- "/Users/jaijotkaur/Desktop/BIO197/data_science_research"
+r_chunk_wd <- getwd()
+r_proj_wd == r_chunk_wd
+r_chunk_wd
 ```
 
 Make sure that everything that is a number is actually numeric.
@@ -57,14 +73,20 @@ We identified a colimn that has problematic data. We need to fix it!
 
 We are going to read the data table again, but we are gonna assign 'NA' to the "dead" value that we do not want in our "HEIGHT" column
 
+
+
+## Cleaning our raw data
+### 3.2 Assigning "NA" to missing/incorrect values
+
 ```{r}
-getwd()
-acacia <- read.csv(file = "/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw/ACACIA_DREPANOLOBIUM_SURVEY.txt", sep = "\t", na.strings = "dead")
+acacia <- read.csv(file = "../data-raw/ACACIA_DREPANOLOBIUM_SURVEY.txt", sep = "\t", na.strings = "dead")
 ```
+
 Let's check if this worked!
 
 ```{r}
 typeof(acacia$HEIGHT)
+class(acacia$HEIGHT)
 ```
 
 ### 4. Visualize our data
@@ -82,6 +104,24 @@ Now we are gonna create our first plotting layer with the function 'ggplot'.
 ```{r}
 colnames(acacia)
 acacia$CIRC
+```
+
+The ggplot function creates a blank canvas, and the canvas contains our data and the variables that we want to plot.
+
+A scatter plot can be created with the function `geom_point()`
+
+```{r}
+colors()
+```
+
+```{r}
+?pch
+```
+
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = HEIGHT)) +
+  geom_point(size = 1, color = "peachpuff", alpha = 0.8, shape = 11) +
+  labs(x = "Circumference (cm)", y = "Height (cm)", title = "Data from UHURU Acacia Survey")
 ```
 
 ```{r}
@@ -110,6 +150,53 @@ ggplot(data = acacia, mapping = aes (x = CIRC, y = HEIGHT, color = TREATMENT)) +
   geom_point(size = 2, alpha = 0.5)
 ```
 
-### 4.2 Visualize a statistical analysis of correlation
+# Subplots or facets
 
+The function to creat subplots by a third variable is called 'facet_wrap'
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = HEIGHT, color = TREATMENT)) + 
+         geom_point() +
+         facet_wrap(~TREATMENT)
+```
+# A little interpretation of what is going on here
+This graph shows the effects of the treatment in the areas that were restructed to certain animals. The area that had been completely open with no fencing, and, therefore used as a control, showed very little trees with only a point demonstrating one that was very thin and short. The one that blocked off all herbivores was the total; this showed there to be many trees. For mega there were trees that were shorter, while meso had trees that were taller. This makes sense because when the taller animals are blocked out, they cannot consume the leaves at the top, while when the smaller animals are blocked out, the trees remain tall. When there is complete fencing for most of the herbivores, there is many trees due to their being no consumption. The meso and mega demonstrate a slight linear pattern in the start and the kind of branch off to points that are more random.
 
+## Model fitting functions
+
+The `geom_smooth()' fucntion allows to fit linear models to a set of points
+
+```{r}
+ggplot(data = acacia, mapping = aes(x= CIRC, y = HEIGHT, color = TREATMENT, linetype = TREATMENT)) + geom_point() + 
+  geom_smooth(method = "loess") + 
+  facet_wrap(~TREATMENT)
+```
+
+## Histograms and barplots
+
+For bar plots we use the geom_bar() function:
+
+```{r}
+ggplot(data = acacia, aes(x = TREATMENT)) +
+  geom_bar()
+```
+
+If we want to see the distribution of a continuous variable we use the geom_histogram() function:
+
+```{r}
+ggplot(data = acacia, mapping = aes(x = HEIGHT, fill = TREATMENT)) + 
+  geom_histogram(bins = 20, color = "black")
+```
+
+## Layer multiple data from the same or different data sets
+
+```{r}
+ggplot() +
+  geom_point(data = acacia, 
+             mapping = aes(x = CIRC, y = HEIGHT,
+                           color = TREATMENT)) +
+  geom_smooth(data = acacia,
+              mapping = aes(x =CIRC, y = HEIGHT)) +
+  geom_histogram(data = acacia,
+                 mapping = aes(x = CIRC, color = TREATMENT), alpha = 0.2)
+
+```
