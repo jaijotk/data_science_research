@@ -43,8 +43,7 @@ rownames(acacia)
 class(acacia$SURVEY)
 # the sapply function allows to apply a function to a list of objects
 # a data frame is a list of vectors of the same length
-sappply(acacia, class)
-viww(acacia)
+sapply(acacia, class)
 ```
 
 How do I test where the computer is?
