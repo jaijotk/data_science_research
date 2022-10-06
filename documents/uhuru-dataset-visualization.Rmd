@@ -200,3 +200,83 @@ ggplot() +
                  mapping = aes(x = CIRC, color = TREATMENT), alpha = 0.2)
 
 ```
+
+# Save images as files
+
+```{r}
+ggsave(filename = "acacia_by_treatment.pdf", width = 5, height = 3)
+```
+
+# Exercise 1. Scatterplots
+
+## Make a scatter plot with CIRC on the x axis and AXIS1 (the maximum canopy width) on the y axis. Label the x axis “Circumference” and the y axis “Canopy Diameter”.
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = AXIS1)) +
+  geom_point() +
+  labs(x = "Circumference", y = "Canopy Diameter", title = "Data from UHURU Acacia Survey")
+```
+
+## The same plot as (1), but with both axes scaled logarithmically (using scale_x_log10 and scale_y_log10).
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = AXIS1)) +
+  geom_point() +
+  scale_x_log10() + scale_y_log10() +
+  labs(x = "Circumference", y = "Canopy Diameter", title = "Data from UHURU Acacia Survey")
+```
+
+## The same plot as (1), but with points colored based on the ANT column (the species of ant symbiont living with the acacia)
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = AXIS1, color = ANT)) +
+  geom_point() +
+  labs(x = "Circumference", y = "Canopy Diameter", title = "Data from UHURU Acacia Survey")
+```
+
+## The same plot as (3)), but instead of different colors show different species of ant (values of ANT) each in a separate subplot.
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = AXIS1, color = ANT)) +
+  geom_point() +
+  labs(x = "Circumference", y = "Canopy Diameter", title = "Data from UHURU Acacia Survey") + 
+  facet_wrap(~ANT)
+```
+
+## The same plot as (4) but add a simple model of the data by adding geom_smooth.
+```{r}
+ggplot(data = acacia, mapping = aes(x = CIRC, y = AXIS1, color = ANT)) +
+  geom_point() +
+  labs(x = "Circumference", y = "Canopy Diameter", title = "Data from UHURU Acacia Survey") + 
+  geom_smooth() +
+  facet_wrap(~ANT)
+```
+
+# Exercise 2. Histograms
+
+## Make a bar plot of the number of acacia with each mutualist ant species (using the ANT column).
+```{r}
+ggplot(data = acacia, aes(x = ANT)) +
+  geom_bar()
+```
+
+## Make a histogram of the height of acacia (using the HEIGHT column). Label the x axis “Height (m)” and the y axis “Number of Acacia”.
+```{r}
+ggplot(data = acacia, mapping = aes(x = HEIGHT)) + 
+   labs(x = "Height (m)", y = "Number of Acacia", title = "Data from UHURU Acacia Survey") + 
+  geom_histogram()
+```
+
+## Make a plot that shows histograms of both AXIS1 and AXIS2. Due to the way the data is structured you’ll need to add a 2nd geom_histogram() layer that specifies a new aesthetic. To make it possible to see both sets of bars you’ll need to make them transparent with the optional argument alpha = 0.3. Set the color for AXIS1 to “red” and AXIS2 to “black” using the fill argument. Label the x axis “Canopy Diameter(m)” and the y axis “Number of Acacia”.
+```{r}
+ggplot()+
+  geom_histogram(data = acacia, mapping = aes(x = AXIS1), alpha = 0.3, color = "red") + 
+  geom_histogram(data = acacia, mapping = aes(x = AXIS2), alpha = 0.3, color = "black") +
+   labs(x = "Canopy Diameter (m)", y = "Number of Acacia", title = "Data from UHURU Acacia Survey")
+```
+
+## Use facet_wrap() to make the same plot as (3) but with one subplot for each treatment. Set the number of bins in the histogram to 10.
+```{r}
+ggplot()+
+  geom_histogram(data = acacia, mapping = aes(x = AXIS1), alpha = 0.3, color = "red", bins = 10) + 
+  geom_histogram(data = acacia, mapping = aes(x = AXIS2), alpha = 0.3, color = "black", bins = 10) +
+   labs(x = "Canopy Diameter (m)", y = "Number of Acacia", title = "Data from UHURU Acacia Survey") +
+  facet_wrap(~~TREATMENT) 
+```
+
