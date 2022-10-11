@@ -279,3 +279,99 @@ ggplot()+
   facet_wrap(~~TREATMENT) 
 ```
 
+# Exercise 3
+
+## Read the file with the function read_tsv from the package readr and assign it to an object called trees:
+
+```{r}
+install.packages("readr")
+library("readr")
+```
+```{r}
+setwd("~/Desktop/BIO197/data_science_research/data-raw")
+
+trees <- read_tsv("TREE_SURVEYS.txt",
+               col_types = list(HEIGHT = col_double(),
+                                AXIS_2 = col_double()))
+```
+
+## Add a new column to the trees data frame that is named canopy_area and contains the estimated canopy area calculated as the value in the AXIS_1 column times the value in the AXIS_2 column.
+
+```{r}
+trees$canopy_area <- trees$AXIS_1 * trees$AXIS_2
+```
+
+## Subset the trees data frame with just the SURVEY, YEAR, SITE, and canopy_area columns.
+
+```{r}
+subset(trees, select = c('SURVEY' , 'YEAR' , 'SITE' , 'canopy_area'))
+```
+
+## Make a scatter plot with canopy_area on the x axis and HEIGHT on the y axis. Color the points by TREATMENT and create a subplot per species uding the function facet_wrap(). This will plot the points for each variable in the SPECIES column in a separate subplot. Label the x axis “Canopy Area (m)” and the y axis “Height (m)”. Make the point size 2.
+
+```{r}
+ggplot(data = trees,
+       mapping = aes(x = canopy_area, y = HEIGHT, color = TREATMENT )) +
+  geom_point(size = 2) +
+  facet_wrap(~SPECIES) +
+  labs(x = "Canopy Area (m)", y = "Height (m)", title = "Scatterplot Depicting Tree Survey Data")
+```
+
+## That’s a big outlier in the plot from (2). 50 by 50 meters is a little too big for a real acacia tree, so filter the data to remove any values for AXIS_1 and AXIS_2 that are over 20 and update the data frame. Then, remake the graph.
+
+```{r}
+trees_no_outliers <- trees$AXIS_1 <= 20 | trees$AXIS_2 <= 20
+trees <- trees [trees_no_outliers, ]
+ggplot(data = trees,
+       mapping = aes(x = canopy_area, y = HEIGHT, color = TREATMENT )) +
+  geom_point(size = 2) +
+  facet_wrap(~SPECIES) +
+  labs(x = "Canopy Area (m)", y = "Height (m)", title = "Scatterplot Depicting Tree Survey Data")
+```
+
+## For this question you will use the package dplyr and the pipe operator %>%. To learn more about the pipe operator and how to use it, watch this introductory video. Using the data without the outlier – i.e., the data generated in (6), create a data fram called abundance that shows how the abundance of each species has been changing through time. To do this, use the functions group_by(), summarize(), and n() to make a data frame with YEAR, SPECIES, and a species_abundance column that has the number of individuals per species per year. For guidance, look at the examples of the functions group_by() (using help(group_by) and summarize() (using help(summarize)). Print out the abundance data frame.
+
+```{r}
+library(dplyr)
+trees %>%
+  group_by(YEAR, SPECIES) %>% 
+  summarize(species_abundance=n()) -> abundance
+```
+
+## Using the data frame generated in (7), make a line plot with points (by using geom_line() in addition to geom_point()) with YEAR on the x axis and abundance on the y axis with one subplot per species. To let you see each trend clearly, let the scale for the y axis vary among plots by adding scales = "free_y" as an optional argument to facet_wrap()
+
+# Non-linear
+```{r}
+ggplot( data = abundance,
+        mapping = aes(x = YEAR, y = species_abundance)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~SPECIES, scales = "free_y")
+```
+
+# Attempt to make it linear
+```{r}
+ggplot( data = abundance,
+        mapping = aes(x = YEAR, y = species_abundance)) +
+  geom_line() +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+  facet_wrap(~SPECIES, scales = "free_y")
+```
+
+# We want to compare the circumference to height relationship in acacia to the same relationship for all trees in the region. These data are stored in two different tables. Make a graph with the relationship between CIRC and HEIGHT for all trees as gray circles in the background and the same relationship for acacia as red circles plotted on top of the gray circles. Scale both axes logarithmically. Include linear models for both sets of data. Provide clear labels for the axes.
+
+```{r}
+ggplot() +
+  geom_point(data = trees,
+             mapping = aes(x = CIRC , y = HEIGHT), color = "gray") +
+  geom_smooth(data = trees,
+              mapping = aes(x = CIRC , y = HEIGHT), color = "gray") +
+  geom_point(data = acacia,
+             mapping = aes(x = CIRC , y = HEIGHT ), color = "red") +
+  geom_smooth(data = acacia,
+              mapping = aes(x = CIRC , y = HEIGHT ), color = "red") +
+  scale_x_log10() +scale_y_log10()
+  labs(x = "Circumference (cm)", y = "Height (m)", title = "Circumference to Height Relationship in Acacia Vs. All Trees in Region")
+```
+
