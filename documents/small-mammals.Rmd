@@ -1,6 +1,8 @@
 ---
 title: "small mammals dataset"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +21,7 @@ For all the data manipulations we are going to be using the "dplyr" package.
 To install packages we use the function 'install_packages()': But to use the functions inside a package, we need to load them to our environment, we do this with the function 'library()'.
 
 ```{r}
-library(dplyr)
+# library(dplyr)
 ```
 
 # Read the data table
@@ -28,13 +30,13 @@ library(dplyr)
 surveys <- read.csv(file = "../data-raw/surveys.csv")
 head(surveys)
 colnames(surveys)
-View(surveys)
+# View(surveys)
 plots <- read.csv(file = "../data-raw/plots.csv")
 head(plots)
-View(plots)
+# View(plots)
 species <- read.csv(file = "../data-raw/species.csv")
 head(species)
-View(species)
+# View(species)
 ```
 
 # Subset a data table
@@ -42,9 +44,9 @@ View(species)
 Using the dplyr function 'subset()' :
 
 ```{r}
-select(surveys, year, species_id, weight)
-surveys_short <- select(surveys, year, species_id, weight)
-head(surveys_short)
+# select(surveys, year, species_id, weight)
+# surveys_short <- select(surveys, year, species_id, weight)
+# head(surveys_short)
 ```
 
 Other ways to subset a data table:
@@ -69,7 +71,7 @@ surveys$weight_decimal <- surveys$weight/10
 colnames(surveys)
 ```
 ```{r}
-surveys <- mutate(surveys, weight_decimal_2 = weight/10)
+# surveys <- mutate(surveys, weight_decimal_2 = weight/10)
 ```
 
 ```{r}
@@ -81,15 +83,15 @@ surveys
 We will use the function 'arrange()'
 
 ```{r}
-surveys_arranged <- arrange(surveys, weight)
+# surveys_arranged <- arrange(surveys, weight)
 
-tail(surveys_arranged, 100)
+# tail(surveys_arranged, 100)
 ```
 
 To arrange in descending order
 
 ```{r}
-arrange(surveys, desc(weight))
+# arrange(surveys, desc(weight))
 ```
 
 ## Filter data 
@@ -97,37 +99,53 @@ arrange(surveys, desc(weight))
 To filter unwanted data or by some specific value in our data we use the function 'filter()'
 
 ```{r}
-filter(surveys, species_id == "DS")
-filter(surveys, species_id != "DS")
+# filter(surveys, species_id == "DS")
+# filter(surveys, species_id != "DS")
 ```
 
 We can also filter by multiple conditions:
 
 ```{r}
-temp_table <- filter(surveys, species_id == "DS", year >= "1998")
-tail(temp_table, 100)
+# temp_table <- filter(surveys, species_id == "DS", year >= "1998")
+# tail(temp_table, 100)
 ```
 
 The logical operator '&' and '|' mean "AND" and "OR"
 
 ```{r}
-filter(surveys, species_id == "DS" & year >= "1998")
+# filter(surveys, species_id == "DS" & year >= "1998")
 ```
 
 ```{r}
-filter(surveys, species_id == "DS" | year >= "1998")
+# filter(surveys, species_id == "DS" | year >= "1998")
 ```
 
 Let's filter for values that are NA, we need the function 'is.na'
 
 ```{r}
-
-is.na(surveys)
-surveys$weight
-
-filter(surveys, !is.na(weight))
+# is.na(surveys)
+# surveys$weight
+# filter(surveys, !is.na(weight))
 ```
 
+# Load surveys.csv into R using read.csv().
 
+```{r}
+surveys <- read.csv(file = "../data-raw/surveys.csv")
+```
 
+# Use select() to create a new data frame object with just the year, month, day, and species_id columns in that order.
+
+```{r}
+# surveys_new <- select(surveys, year, month, day, species_id)
+```
+
+# Use mutate(), select(), and filter() with !is.na() to create a new data frame with the year, species_id, and weight in kilograms of each individual, with no null weights. The weight in the table is given in grams so you will need to create a new column for weight in kilograms by dividing the weight column by 1000.
+
+```{r}
+surveys_subset <- filter(surveys, !is.na(weight))
+surveys_subset <- mutate(surveys_subset, weight_kg = weight/1000)
+surveys_subset <- select(surveys_subset, year, species_id, weight_kg)
+filter(surveys_subset, species_id == "SH")
+```
 
