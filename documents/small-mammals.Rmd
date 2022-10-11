@@ -21,7 +21,7 @@ For all the data manipulations we are going to be using the "dplyr" package.
 To install packages we use the function 'install_packages()': But to use the functions inside a package, we need to load them to our environment, we do this with the function 'library()'.
 
 ```{r}
-# library(dplyr)
+library(dplyr)
 ```
 
 # Read the data table
@@ -137,7 +137,7 @@ surveys <- read.csv(file = "../data-raw/surveys.csv")
 # Use select() to create a new data frame object with just the year, month, day, and species_id columns in that order.
 
 ```{r}
-# surveys_new <- select(surveys, year, month, day, species_id)
+surveys_new <- select(surveys, year, month, day, species_id)
 ```
 
 # Use mutate(), select(), and filter() with !is.na() to create a new data frame with the year, species_id, and weight in kilograms of each individual, with no null weights. The weight in the table is given in grams so you will need to create a new column for weight in kilograms by dividing the weight column by 1000.
