@@ -7,22 +7,127 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## The Portal Project Teaching Dataset
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+It is an ecological experiment made in the Chihuahuan deser in Arizona near the city of Portal
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Later I will add a picture of the Chihuahuan desert
+https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.desertusa.com%2Fchihuahuan-desert.html&psig=AOvVaw1ccqb81iiGHfvmvPe9xZXL&ust=1665611083984000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCPj2uP2S2foCFQAAAAAdAAAAABAD
 
-```{r cars}
-summary(cars)
+For all the data manipulations we are going to be using the "dplyr" package.
+
+To install packages we use the function 'install_packages()': But to use the functions inside a package, we need to load them to our environment, we do this with the function 'library()'.
+
+```{r}
+library(dplyr)
 ```
 
-## Including Plots
+# Read the data table
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+surveys <- read.csv(file = "../data-raw/surveys.csv")
+head(surveys)
+colnames(surveys)
+View(surveys)
+plots <- read.csv(file = "../data-raw/plots.csv")
+head(plots)
+View(plots)
+species <- read.csv(file = "../data-raw/species.csv")
+head(species)
+View(species)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Subset a data table
+
+Using the dplyr function 'subset()' :
+
+```{r}
+select(surveys, year, species_id, weight)
+surveys_short <- select(surveys, year, species_id, weight)
+head(surveys_short)
+```
+
+Other ways to subset a data table:
+
+```{r}
+columns2keep <- c("year", "species_id", "weight")
+surveys[,"year"]
+```
+
+## Add columns to a data table
+
+We can use the function 'mutate()' 
+
+Let's say that we want to add on extra column that has weight divided by 10
+
+Using the classic approach
+
+```{r}
+colnames(surveys)
+surveys$weight_decimal <- surveys$weight/10
+
+colnames(surveys)
+```
+```{r}
+surveys <- mutate(surveys, weight_decimal_2 = weight/10)
+```
+
+```{r}
+surveys
+```
+
+## Rearrange/reorder a data table by some value
+
+We will use the function 'arrange()'
+
+```{r}
+surveys_arranged <- arrange(surveys, weight)
+
+tail(surveys_arranged, 100)
+```
+
+To arrange in descending order
+
+```{r}
+arrange(surveys, desc(weight))
+```
+
+## Filter data 
+
+To filter unwanted data or by some specific value in our data we use the function 'filter()'
+
+```{r}
+filter(surveys, species_id == "DS")
+filter(surveys, species_id != "DS")
+```
+
+We can also filter by multiple conditions:
+
+```{r}
+temp_table <- filter(surveys, species_id == "DS", year >= "1998")
+tail(temp_table, 100)
+```
+
+The logical operator '&' and '|' mean "AND" and "OR"
+
+```{r}
+filter(surveys, species_id == "DS" & year >= "1998")
+```
+
+```{r}
+filter(surveys, species_id == "DS" | year >= "1998")
+```
+
+Let's filter for values that are NA, we need the function 'is.na'
+
+```{r}
+
+is.na(surveys)
+surveys$weight
+
+filter(surveys, !is.na(weight))
+```
+
+
+
+
