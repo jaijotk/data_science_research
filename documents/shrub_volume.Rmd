@@ -1,6 +1,8 @@
 ---
 title: "shrub volume data"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -26,100 +28,100 @@ shrubs <- read.csv(file = "../data-raw/shrub-volume-data.csv")
 ## Select the data from the “length” column and print it out (using select()).
 
 ```{r}
-select(shrubs, length) %>% print()
+# select(shrubs, length) %>% print()
 ```
 
 ## Select the data from the site and experiment columns and print it out (using select()).
 
 ```{r}
-select(shrubs, site, experiment) %>% print()
+# select(shrubs, site, experiment) %>% print()
 ```
 
 ## Add a new column named “area” containing the area of the shrub, which is the length times the width (using mutate()).
 
 ```{r}
-mutate(shrubs, area = length*width)
+# mutate(shrubs, area = length*width)
 ```
 
 ## Sort the data by length (using arrange()).
 
 ```{r}
-arrange(shrubs, length)
+# arrange(shrubs, length)
 ```
 
 ## Filter the data to include only plants with heights greater than 5 (using filter()).
 
 ```{r}
-filter(shrubs, height > 5)
+# filter(shrubs, height > 5)
 ```
 
 ## Filter the data to include only plants with heights greater than 4 and widths greater than 2 (using , or & to include two conditions).
 
 ```{r}
-filter(shrubs, height > 4 & width > 2)
+# filter(shrubs, height > 4 & width > 2)
 ```
 
 ## Filter the data to include only plants from Experiment 1 or Experiment 3 (using | for “or”).
 
 ```{r}
-filter(shrubs, experiment == 1 | experiment == 3)
+# filter(shrubs, experiment == 1 | experiment == 3)
 ```
 
 ## Filter the data to remove rows with null values in the height column (using !is.na)
 
 ```{r}
-filter(shrubs, !is.na(height))
+# filter(shrubs, !is.na(height))
 ```
 
 ## Create a new data frame called shrub_volumes that includes all of the original data and a new column containing the volumes (length * width * height), and display it.
 
 ```{r}
-mutate(shrubs, volume = length*width*height) %>%
-  select(site, experiment, length, width, height, volume)
+# mutate(shrubs, volume = length*width*height) %>%
+  # select(site, experiment, length, width, height, volume)
 ```
 
 # Exercise 2
 
 ## Modify the code to calculate and print the average height of a plant in each experiment.
 ```{r}
-shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
-by_experiment <- group_by(shrub_dims, experiment)
-avg_height_by_experiment <- summarize(by_experiment, avg_height = mean(height))
-avg_height_by_experiment
+# shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
+# by_experiment <- group_by(shrub_dims, experiment)
+# avg_height_by_experiment <- summarize(by_experiment, avg_height = mean(height))
+# avg_height_by_experiment
 ```
 
 ## Use max() to determine the maximum height of a plant at each site.
 
 ```{r}
-shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
-by_site <- group_by(shrub_dims, site)
-max_height <- summarize(by_site, max_height = max(height))
-max_height
+# shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
+# by_site <- group_by(shrub_dims, site)
+# max_height <- summarize(by_site, max_height = max(height))
+# max_height
 ```
 
 ## Write the same code but as a pipeline (using the pipe |> or *>*) to get the same result.
 
 ```{r}
-shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
-  avg_height <- shrub_dims %>%  
-  group_by(site) %>%
-  summarize(avg_height = mean(height))
+# shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
+ # avg_height <- shrub_dims %>%  
+  # group_by(site) %>%
+  # summarize(avg_height = mean(height))
 ```
 
 ```{r}
-shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
-avg_height_by_experiment <- shrub_dims %>%
-  group_by(experiment) %>%
-  summarize(avg_height = mean(height))
-avg_height_by_experiment
+# shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
+# avg_height_by_experiment <- shrub_dims %>%
+  # group_by(experiment) %>%
+  # summarize(avg_height = mean(height))
+# avg_height_by_experiment
 ```
 
 ```{r}
-shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
-max_height <- shrub_dims %>%
-  group_by(site) %>%
-  summarize(max_height = max(height))
-max_height
+# shrub_dims <- read.csv('../data-raw/shrub-volume-data.csv')
+# max_height <- shrub_dims %>%
+  # group_by(site) %>%
+  # summarize(max_height = max(height))
+# max_height
 ```
 
 # Exercise 3
@@ -142,22 +144,22 @@ shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
 After assigning the dataset to an object we can use the object and pipeline to start it off
 
 ```{r}
-shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
-shrub_volume_site <- shrub_data %>%
-  mutate(volume = length * width * height) %>%
-  group_by(site) %>%
-  summarize(mean_volume = mean(volume))
+# shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
+# shrub_volume_site <- shrub_data %>%
+ #  mutate(volume = length * width * height) %>%
+  # group_by(site) %>%
+  # summarize(mean_volume = mean(volume))
 ```
 
 When using summarize, instead of the mean volume taking the average of the volumes, it took the maximum of the volumes , which is incorrect. To fith this, the `max` function was changed to the `mean` function.
 
 
 ```{r}
-shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
-shrub_volume_experiment <- shrub_data %>%
-  mutate(volume = length * width * height) %>%
-  group_by(experiment) %>%
-  summarize(mean_volume = mean(volume))
+# shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
+# shrub_volume_experiment <- shrub_data %>%
+ #  mutate(volume = length * width * height) %>%
+ #  group_by(experiment) %>%
+ #  summarize(mean_volume = mean(volume))
 ```
 
 This shows the correct code to import the shrub volume data and calculate the average shrub volume for each site and, separately, for each experiment.
