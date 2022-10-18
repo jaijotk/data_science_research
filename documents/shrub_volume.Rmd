@@ -17,6 +17,8 @@ The dataset is based on a study of the factors that control the size and carbon 
 
 ```{r}
 knitr::include_graphics("../fig/shrubs-image.jpeg")
+library(magrittr)
+library(dplyr)
 ```
 
 ## Import the data set using read.csv(). Assign it to an object called shrubs.
