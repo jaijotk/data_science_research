@@ -237,5 +237,184 @@ do_mean_mass_by_year <- surveys %>%
   summarize(mean_weight_by_year = mean(weight)) 
 do_mean_mass_by_year
 ```
+# Setup your RStudio project
+
+First, load the data, then look at it:
+
+```{r}
+surveys <- read.csv("../data-raw/surveys.csv")
+species <- read.csv("../data-raw/species.csv")
+plots <- read.csv("../data-raw/plots.csv")
+View(surveys)
+View(species)
+View(plots)
+```
+
+```{r}
+inner_join(surveys, species, by = "species_id")
+left_join(surveys, species, by = "species_id")
+right_join(surveys, species, by = "species_id")
+full_join(surveys, species, by = "species_id")
+```
+
+How do we find out if we have matching columns in two tables
+
+```{r}
+surveys_colnames <- colnames(surveys)
+species_colnames <- colnames(species)
+surveys_colnames[7]
+to_keep <- c(1,4,3,2)
+to_keep <- c(FALSE,TRUE,TRUE,FALSE)
+species_colnames[to_keep]
+```
+
+The %in% operator 
+
+```{r}
+1 %in% c(1,2,3)
+c(1,2,3) %in% 1
+colnames(species) %in% colnames(surveys)
+matching_columns <- colnames(species) %in% colnames(surveys)
+matching_columns
+colnames(species)[matching_columns]
+```
+
+How to join more than 2 tables?
+
+```{r}
+combined <- inner_join(surveys, species, by = "species_id")
+combined_full <- inner_join(combined, plots, by = "plot_id")
+head(combined)
+head(combined_full)
+```
+
+Run the code above using a pipe?
+
+```{r}
+combined_full <- surveys %>%
+  inner_join(species, by = "species_id") %>%
+  inner_join(plots, by = "plot_id")
+head(combined_full)
+```
+
+## Use inner_join() and filter() to get a data frame with the information from the surveys and plots tables where the "plot_type" is "Control".
+
+```{r}
+control_plot_survey <- surveys %>%
+  inner_join(plots, by = "plot_id") %>%
+  filter(plot_type == "Control")
+control_plot_survey
+```
+
+# We want to do an analysis comparing the size of individuals on the "Control" plots to the "Long-term Krat Exclosures".
+
+## Create a data frame with the "year", "genus", "species", "weight" and "plot_type" for all cases where the
+## plot type is either "Control" or "Long-term Krat Exclosure".
+## Only include cases where "Taxa" is "Rodent".
+## Remove any records where the “weight” is missing.
+
+```{r}
+colnames(species)
+combined_full <- inner_join(surveys, species, by = "species_id") %>%
+inner_join(plots, by = "plot_id") 
+colnames(combined_full)
+combined_full %>% 
+select(year, genus, species, weight, plot_type, taxa) %>%
+filter(plot_type == "Control" | plot_type == "Long-term Krat Exclosure") %>%
+  filter(taxa == "Rodent") %>% 
+  select(year, genus, species, weight, plot_type) 
+```
+
+# Solo In-Class Exercise
+
+## Create a data frame with only data for the “species_id” “DO”, with the columns "year", "month", "day", "species_id", and "weight".
+
+```{r}
+combined_full %>%
+  filter(species_id == "DO") %>%
+  select(year, month, day, species_id, weight) -> data1
+```
+
+## Create a data frame with only data for species IDs "PP" and "PB" and for years starting in 1995, with the columns "year", "species_id", and "hindfoot_length", with no missing values for "hindfoot_length".
+
+```{r}
+combined_full %>% 
+  filter(species_id == "PP" | species_id == "PB") %>%
+  filter(year >= 1995) %>% 
+  filter(!is.na(hindfoot_length)) -> data2
+```
+
+## Create a data frame with the average "hindfoot_length" for each "species_id" in each "year" with no null values.
+
+```{r}
+combined_full %>% 
+  filter(!is.na(hindfoot_length)) %>%
+  group_by(year, species_id) %>%
+  summarize(mean_hindfoot_length_by_year = mean(hindfoot_length)) -> data3
+```
+
+## Create a data frame with the "year", "genus", "species", "weight" and "plot_type" for all cases where the "genus" is "Dipodomys".
+
+```{r}
+combined_full %>% 
+  filter(genus == "Dipodomys") %>% 
+  select(year, genus, species, weight, plot_type) -> data4
+```
+
+## Make a scatter plot with "weight" on the x-axis and "hindfoot_length" on the y-axis. Use a log10() scale on the x-axis. Color the points by "species_id". Include good axis labels.
+
+```{r}
+library("ggplot2")
+ggplot(data = combined_full, mapping = aes(x = weight, y = hindfoot_length, color = species_id)) +  
+  geom_point() +
+  scale_x_log10() +
+  labs(x = "Weight", y = "Hindfoot Length", title = "Data from Surveys, Plots, and Species")
+```
+
+## Make a histogram of weights with a separate subplot for each "species_id". Do not include species with no weights. Set the "scales" argument to "free_y" so that the y-axes can vary. Include good axis labels.
+
+```{r}
+combined_full %>% 
+  filter(!is.na(weight)) %>%
+  ggplot(data = combined_full, mapping = aes(x = weight)) + 
+   labs(x = "Weight", y = "Number of Individuals in the Species", title = "Distribution of Weight per Species") + 
+  geom_histogram() +
+  facet_wrap(~species_id, scales = "free_y")
+```
+
+## Make a plot with histograms of the weights of three species, "PP", "PB", and "DM", colored by "species_id", with a different facet (i.e., subplot) for each of three "plot_type"’s "Control", "Long-term Krat Exclosure", and "Short-term Krat Exclosure". Include good axis labels and a title for the plot. Export the plot to a PNG file.
+
+```{r}
+combined_full %>% 
+  filter(!is.na(weight)) %>% 
+  filter(species_id == "PP" | species_id == "PB" | species_id == "DM") %>% 
+  filter(plot_type != "Rodent Exclosure" & plot_type != "Spectab exclosure") %>% 
+ggplot(mapping = aes(x = weight, color = species_id, fill = species_id)) +
+  geom_histogram() +
+   labs(x = "Weight", y = "Number of Individuals in the Species", title = "Distribution of Weight per Species by Plot Type")
+  facet_wrap(~plot_type)
+```
+
+# Solo In-Class Exercise
+
+## Develop a data manipulation pipeline for the Portal surveys table that produces a table of data for only the three Dipodomys species ("DM", "DO", "DS").
+
+## The species IDs should be presented as lower case, ## not upper case.
+## The table should contain information on the date, the species ID, the weight and hindfoot length.
+## The data should not include null values for either weight or hindfoot length.
+## The table should be sorted first by the species (so that each species is grouped together) and then by weight, with the largest weights at the top.
+
+```{r}
+combined_full %>% 
+  mutate(species_id = tolower(species_id)) %>% 
+  select(month, day, year, species_id, weight, hindfoot_length) %>% 
+  filter(species_id == "dm" | species_id == "do" | species_id == "ds") %>% 
+  filter(!is.na(weight)) %>% 
+  filter(!is.na(hindfoot_length)) %>% 
+  arrange(species_id) %>% 
+  arrange(desc(weight))
+```
+
+
 
 
