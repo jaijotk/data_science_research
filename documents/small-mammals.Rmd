@@ -245,9 +245,6 @@ First, load the data, then look at it:
 surveys <- read.csv("../data-raw/surveys.csv")
 species <- read.csv("../data-raw/species.csv")
 plots <- read.csv("../data-raw/plots.csv")
-View(surveys)
-View(species)
-View(plots)
 ```
 
 ```{r}
@@ -439,6 +436,10 @@ rep("luna", 100)
 rep(c(TRUE, FALSE), 7)
 letters
 LETTERS
+```
+
+```{r, child = 'vectors_and_data_frames.Rmd'}
+
 ```
 
 

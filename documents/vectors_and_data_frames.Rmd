@@ -1,0 +1,112 @@
+---
+title: "vectors and data frames"
+author: "Jai Jot Kaur"
+date: "10/20/2022"
+output: html_document
+---
+
+# The relationship between vectors and data frames
+
+## How to create vectors
+
+```{r}
+a_number <- 100
+length(a_number)
+c(1,2,3)
+c(FALSE, TRUE, TRUE)
+c("Luna", "Jai", "Azul", "Marcos")
+1:4
+0.5:5
+c(1, 6, 7, 100, -1)
+1;100
+long_vector <- 1:546378
+length(long_vector)
+tail(long_vector)
+seq(1, 100, 0.3)
+seq(-100, 5, 2)
+100:20
+-100:-5
+rep(1:5, 3)
+rep("luna", 100)
+rep(c(TRUE, FALSE), 7)
+letters
+LETTERS
+```
+
+
+## Joining vectors to create data frames
+
+```{r}
+year_data <- data.frame(names = c("Azul", "Jai", "Marcos"), 
+                        year = c(4,3,4),
+                        college = "UC Merced")
+year_data
+```
+
+# Joint in-class exercise
+
+```{r}
+length <- c(2.2, 2.1, 2.7, 3.0, 3.1, 2.5, 1.9, 1.1, 3.5, 2.9)
+width <- c(1.3, 2.2, 1.5, 4.5, 3.1, NA, 1.8, 0.5, 2.0, 2.7)
+height <- c(9.6, 7.6, 2.2, 1.5, 4.0, 3.0, 4.5, 2.3, 7.5, 3.2)
+
+taxus_baccata_data <- data.frame(length = length,
+                                 width = width,
+                                 height = height,
+                                 genus = "Taxus",
+                                 species = "baccata")
+taxus_baccata_data
+```
+
+## Extracting values from vectors and data frames
+
+```{r}
+surveys <- read.csv(file = "../data-raw/surveys.csv")
+head(surveys)
+# extracting one column at a time, we use the dollar sign 
+surveys$year
+surveys$month
+surveys$species_id
+# if we want to extract rows and/or multiple columns, we use the square brackets
+surveys[1,2]
+surveys[1:5,]
+```
+
+# Exercise
+
+## Use $ to extract the weight column into a vector called surveys_weight
+```{r}
+surveys_weight <- surveys$weight
+surveys_weight
+```
+
+## Use [] to extract the month column into a vector called surveys_month
+```{r}
+surveys_month <- surveys[, "month"]
+surveys_month
+```
+
+## Extract the hindfoot_length column into a vector and calculate the mean hindfoot length ignoring missing values.
+```{r}
+surveys_filtered_hl <- filter(surveys, !is.na(hindfoot_length))
+surveys_hindfoot_length <- surveys_filtered_hl[, "hindfoot_length"]
+mean(surveys_hindfoot_length)
+
+surveys_hindfoot <- surveys$hindfoot_length
+mean(surveys_hindfoot, na.rm = TRUE)
+```
+
+### Extraxt values from vectors
+
+```{r}
+letters[1:5]
+letters[c(17, 12, 9, 3)]
+letters[5:1]
+letters[-c(1, 6, 8, 9)]
+colnames(surveys)
+surveys[, -(1:4)]
+```
+
+
+
+
