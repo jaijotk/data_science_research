@@ -147,7 +147,7 @@ After assigning the dataset to an object we can use the object and pipeline to s
 
 ```{r}
 shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
-shrub_volume_site <- shrub_data %>%
+svc <- shrub_data %>%
   mutate(volume = length * width * height) %>%
   group_by(site) %>%
   summarize(mean_volume = mean(volume))
@@ -158,13 +158,154 @@ When using summarize, instead of the mean volume taking the average of the volum
 
 ```{r}
 shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
-shrub_volume_experiment <- shrub_data %>%
+sve <- shrub_data %>%
   mutate(volume = length * width * height) %>%
   group_by(experiment) %>%
   summarize(mean_volume = mean(volume))
 ```
 
 This shows the correct code to import the shrub volume data and calculate the average shrub volume for each site and, separately, for each experiment.
+
+Homework: Shrub volume data set - part 2
+
+# Exercise 4
+
+## Import the experiments data and then use inner_join() to combine it with the shrub dimensions data to add a "manipulation" column to the shrub data.
+
+```{r}
+shrub_data <- read.csv("../data-raw/shrub-volume-data.csv")
+shrub_volume_experiments <- read.csv("../data-raw/shrub-volume-experiments.csv")
+shrub_volume_sites <- read.csv("../data-raw/shrub-volume-sites.csv")
+
+combined_sd <- inner_join(shrub_data, shrub_volume_experiments, by = "experiment")
+combined_full_sd <- inner_join(combined_sd, shrub_volume_sites, by = "site")
+
+combined_full_sd
+```
+
+# Exercise 5
+
+## The smallest value of length, width and height.
+```{r}
+length <- c(2.2, 2.1, 2.7, 3.0, 3.1, 2.5, 1.9, 1.1, 3.5, 2.9)
+width <- c(1.3, 2.2, 1.5, 4.5, 3.1, NA, 1.8, 0.5, 2.0, 2.7)
+height <- c(9.6, 7.6, 2.2, 1.5, 4.0, 3.0, 4.5, 2.3, 7.5, 3.2)
+```
+
+The smallest value of:
+length: 1.1
+width: 0.5
+height: 1.5
+
+The largest value of:
+length: 3.5
+width: 4.5
+height: 9.6
+
+The sum value of:
+length: 25
+width: 19.6
+height: 45.4
+
+The average value of:
+length: 2.5
+width: 2.178
+height: 4.540
+
+```{r}
+min(length, na.rm = TRUE)
+min(width, na.rm = TRUE)
+min(height, na.rm = TRUE)
+
+max(length, na.rm = TRUE)
+max(width, na.rm = TRUE)
+max(height, na.rm = TRUE)
+
+sum(length, na.rm = TRUE)
+sum(width, na.rm = TRUE)
+sum(height, na.rm = TRUE)
+
+mean(length, na.rm = TRUE)
+mean(width, na.rm = TRUE)
+mean(height, na.rm = TRUE)
+```
+
+
+The volume of each shrub (length × width × height). Storing this as an object or variable will make some of the next problems easier.
+```{r}
+volume <- length*width*height
+volume
+```
+
+The sum of the volume of all of the shrubs.
+224.379
+
+```{r}
+sum(volume, na.rm = TRUE)
+```
+
+A vector of the height of shrubs with lengths > 2.5.
+```{r}
+height_2.5 <- subset(height, height > 2.5)
+height_2.5
+```
+
+A vector of the height of shrubs with heights > 5.
+```{r}
+height_5 <- subset(height, height > 5)
+height_5
+```
+
+A vector of the heights of the first 5 shrubs (using []).
+```{r}
+height_first_5 <- height[1:5]
+height_first_5
+```
+
+A vector of the volumes of the first 3 shrubs (using []).
+```{r}
+volume_first3 <- volume[1:3]
+volume_first3
+```
+
+A vector of the volumes of the last 5 shrubs with the code written so that it will return the last 5 values regardless of the length of the vector (i.e., it will give the last 5 values if there are 10, 20, or 50 individuals).
+
+```{r}
+volume_last5 <- tail(volume, n = 5)
+volume_last5
+```
+
+# Exercise 6
+
+A vector of shrub lengths
+```{r}
+shrub_dimensions_labeled <- read.csv("../data-raw/shrub-dimensions-labeled.csv")
+
+shrub_length <- shrub_dimensions_labeled$length
+```
+
+A vector of the volume of each of the shrubs
+```{r}
+shrub_height <- shrub_dimensions_labeled$height
+shrub_width <- shrub_dimensions_labeled$width
+volume_dimensions <- shrub_length*shrub_height*shrub_width
+```
+
+A data frame with just the shrubID and height columns
+```{r}
+df_id_height <- select(shrub_dimensions_labeled, shrubID, height) 
+```
+
+A data frame with the second row of the full data frame
+```{r}
+df_second_row <- shrub_dimensions_labeled[2,]
+```
+
+A data frame with the first 5 rows of the full data frame
+```{r}
+df_first_five_rows <- shrub_dimensions_labeled[1:5,]
+```
+
 
 
 
