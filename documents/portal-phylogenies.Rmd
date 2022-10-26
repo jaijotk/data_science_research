@@ -1,7 +1,153 @@
 ---
-title: "portal-phylogenies.Rmd"
+title: "portal phylogenies.Rmd"
 author: "Jai Jot Kaur"
 date: "10/25/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Add an intro to the newick format
+## A newick file is a text file that demonstrates a representation for a phylogenetic tree. This text file allows the easy accessibility and reading of the tree by the computer. An inner node is represented by a pair of paranthesis, a tip is represented by names or character strinngs, a lineage is represented by a comma which also allwos separation of the nodes and tups, and, finally, the semicolon is representative of the end of the tre; therefore, multiple semicolons in a newick file may represent multiple trees. This is useful as image files for the data are not able to be read by a cimputer, so a text file, such as the nwick file, is necessary for the computer to easily read the file
+
+# The package 'ape'
+
+```{r}
+library(ape)
+```
+
+To read a newick tree from a local file:
+
+```{r}
+portal_tree <- read.tree("../data-raw/portal-tree.tre")
+portal_tree
+```
+
+Read a newick from a URL 
+
+```{r}
+small_tree <- read.tree(file = "http://ape-package.ird.fr/APER/APER2/primfive.tre")
+small_tree
+```
+
+# The structure of a tree in R
+
+```{r}
+surveys <- read.csv("../data-raw/surveys.csv")
+class(portal_tree)
+length(portal_tree)
+length(surveys)
+colnames(surveys)
+colnames(portal_tree)
+names(portal_tree)
+portal_tree$Nnode
+portal_tree["tip.label"]
+portal_tree[[3]]
+summary(portal_tree)
+str(portal_tree)
+class(portal_tree$edge)
+portal_tree$edge
+```
+
+```{r}
+str(surveys)
+```
+
+```{r}
+plot.phylo(x = portal_tree)
+```
+
+An extension of ggplot for phylogenetic visualization: `ggtree`
+To install packages from the Bioconductor repo, we need a CRAN package called BiocManager
+
+```{r}
+library(BiocManager)
+library(ggtree)
+```
+
+```{r}
+ggtree(portal_tree)
+```
+
+This is equivalent to:
+
+```{r}
+ggplot(portal_tree, aes(x, y)) +
+  geom_tree() +
+  theme_tree()
+```
+
+Plot the small tree of five species of primates and include a scale what is the difference between the portal and the small tree 
+```{r}
+ggtree(small_tree) +
+  geom_treescale()
+```
+
+```{r}
+class(small_tree)
+length(small_tree) # gives the number of 
+names(small_tree)
+small_tree$Nnode
+small_tree["tip.label"]
+head(small_tree[[3]])
+summary(small_tree)
+str(small_tree) # $ to access elements
+head(small_tree$edge)
+```
+
+```{r}
+ggtree(portal_tree) +
+geom_treescale()
+ggtree(small_tree) +
+geom_treescale()
+```
+
+
+```{r}
+names(small_tree)
+```
+
+- a difference in number of tips (43 vs 5)
+- an edge length in 'small_tree', but it has no node labels
+
+```{r}
+small_tree$edge.length
+small_tree$node.label
+portal_tree$node.label
+```
+
+## Add tip labels and node labels
+
+Because a plot is nothing with no labels:
+
+```{r}
+ggtree(portal_tree) + 
+  geom_treescale() +
+  geom_tiplab(size = 1, color = "purple", fontface = "italic")
+```
+
+Add a limit to the plot so we can see the labels fully: 
+
+```{r}
+ggtree(portal_tree) + 
+  geom_treescale() +
+  geom_tiplab(size = 1, color = "purple", fontface = "italic") +
+  xlim(NA,200)
+```
+
+Do this for small_tree for homework
+
+Get branch lengths
+
+```{r}
+branching.times(small_tree)
+ggtree(small_tree) + 
+  geom_treescale() +
+  geom_tiplab(size = 4, color = "purple", fontface = "italic") +
+  xlim(NA,1.15)
+```
 
