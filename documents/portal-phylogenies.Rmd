@@ -304,7 +304,7 @@ ggtree(small_tree) +
   geom_tiplab(fontface = "italic")
 
 label <- small_tree$tip.label
-taxa <- c("Hominini", "Hominidae", "Hominoidea", "Catarrhini", "Haplorhini")
+taxa <- c("Hominini", "Ponginae", "Cercopithecoidea", "Platyrrhini", "Lorisoidea")
 common_name <- c("Human", "Orangutan", "Macaques", "Spider Monkey", "Lesser Bushbaby")
 
 data.frame(label, taxa, common_name)
