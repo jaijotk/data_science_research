@@ -282,7 +282,7 @@ taxonomy$label
 
 ```{r}
 tip_label <- small_tree$tip.label
-left_join(small_tree, small_tree, by = "tip.label")
+# left_join(small_tree, small_tree, by = "tip.label")
 ```
 
 ### Exercise - homework
@@ -320,7 +320,6 @@ library(tidytree)
 data("tree_boots")
 data("df_tip_data")
 data("df_inode_data")
-trr_boots
 # column "Newick_label" change to "label  in df_tip_data and in df_inode_data"
 ```
 
