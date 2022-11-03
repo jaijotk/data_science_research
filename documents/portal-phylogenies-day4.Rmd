@@ -1,0 +1,179 @@
+---
+title: "Node labels on trees"
+author: "Jai Jot Kaur"
+date: "11/3/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The data set
+
+Data that comes with an R package.
+Working with the `TDbook` package. 
+
+Load the packages and the data package `TDbook`:
+
+```{r}
+library(TDbook)
+library(ggtree)
+library(tidytree)
+```
+
+Load the data from teh data package, using the `data()` function.
+The data that we ae loading is
+- tree_boots
+- df_tip_data
+- df_inode_data
+
+```{r}
+data("tree_boots", "df_inode_data", "df_tip_data")
+tree_boots
+```
+
+Exercise
+1. What is the class of this three objects
+```{r}
+class(tree_boots)
+class(df_inode_data)
+class(df_tip_data)
+typeof(tree_boots)
+typeof(df_inode_data)
+typeof(df_tip_data)
+```
+
+The class of `tree_boots` is phylogeny.
+The class of `df_inode_data` is data frame.
+The class of `df_tip_data` is data frame.
+
+2. How many elements does `tree_boots` has
+```{r}
+str(tree_boots)
+```
+
+The number of elements in `tree_boots` is 12.
+
+3. How many rows does `df_tip_data` and `df_inode_data` have.
+```{r}
+nrow(df_tip_data)
+nrow(df_inode_data)
+```
+
+The number of rows in `df_tip_data` is 7.
+The number of rows in `df_inode_data` is 6.
+
+4. Compare the row numbers of both objects to the lengths of the `$tip.label` and `$node.label` elements of `tree_boots`
+```{r}
+length(tree_boots$tip.label)
+length(tree_boots$node.label)
+tree_boots$tip.label %>% length()
+tree_boots$node.label %>% length()
+```
+
+The length of the `$tip.label` element of `tree_boots` is 7. This is the same as the number of rows in `df_tip_data`. This means that there is a relationship between these two. Each tip label has data
+The length of the `$node.label` element of `tree_boots` is 6. This is the same as the number of rows in `df_inode_data`.
+
+5. Join the tree object with the data table that contains tip data and create an object called `tree_joined`.
+```{r}
+library(tidytree) # not the one from dplyr package
+colnames(df_tip_data)
+df_tip_data$Newick_label
+tree_boots$tip.label
+# rename the 'Newick_label" column as "label"
+df_mutated <- mutate(df_tip_data, label = Newick_label)
+colnames(df_mutated)
+df_mutated$Newick_label
+df_mutated$label
+left_join(tree_boots, df_mutated, by = "label")
+
+df_tip_data
+
+colnames(df_tip_data) -> my_colnames
+my_colnames
+class(my_colnames)
+typeof(colnames)
+my_colnames[1]
+my_colnames[1] <- "column 1"
+my_colnames[10] <- "taxonomy"
+
+colnames(df_tip_data)[10] <- "taxonomy"
+df_tip_data
+
+colnames(df_tip_data)[1] <- "label"
+df_tip_data
+
+# try to join again tree_boots and df_tip_data
+
+tree_joined <- left_join(tree_boots, df_tip_data)
+tree_joined
+tree_boots
+```
+
+```{r}
+tree_joined@phylo
+tree_joined@extraInfo$mass_in_kg
+```
+
+### Plot node labels into a tree
+
+```{r}
+df_tip_data
+df_inode_data
+```
+
+Join tree_boots to df_inode_data; Hint: Pay attention to the names pf the columns, first change the name of the"newick_label" column to "label":
+
+```{r}
+colnames(df_inode_data)[1] <- "label"
+colnames(df_inode_data)
+tree_data <- left_join(tree_boots, df_inode_data)
+tree_data@extraInfo
+```
+
+```{r}
+ggtree(tree_data) +
+  geom_tiplab(fontface = "italic") +
+  xlim(0,5) +
+  geom_nodelab(mapping = aes(label = vernacularName, color = vernacularName))
+```
+
+```{r}
+library(dplyr)
+species <- read.csv("../data-raw/species.csv")
+surveys <- read.csv("../data-raw/surveys.csv")
+
+taxonomy_means <- full_join(surveys, species) %>% 
+  filter(!is.na(weight) & !is.na(hindfoot_length)) %>% 
+  group_by(species_id) %>% 
+  summarise(mean_weight = mean(weight), mean(hindfoot_length))
+
+portal_taxonomy <- read.csv("../data-raw/portal-species-taxonomy.csv")
+colnames(portal_taxonomy)
+
+portal_taxonomy_means <- full_join(portal_taxonomy, taxonomy_means) 
+
+library(tidytree)
+portal_tree <- read.tree(file = "../data-raw/portal-tree.tre")
+portal_tree
+colnames(portal_taxonomy_means)
+portal_joined <- tidytree:::left_join.phylo(portal_tree, portal_taxonomy_means)
+```
+
+Homework
+Add node labels to your two tree plots of Portal tree data with average weight and hindfoot length. Use the column "taxa" both as label and fill color.
+1. Join portal_tree and the dataframe with average weights and hindfoot lengths, and taxa data.
+2. Plot it
+3. Add tip labels colored by taxa
+4. Add node labels
+
+```{r}
+ggtree(portal_joined) +
+  geom_tiplab(mapping = aes(color = taxa), fontface = "italic", size = 2) +
+  xlim(0,15) +
+  geom_nodelab(mapping = aes(color = taxa), size =  2)
+```
+
