@@ -1,0 +1,183 @@
+---
+title: "functions-prep.Rmd"
+author: "Jai Jot Kaur"
+date: "11/8/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Writing Your Own Functions in R
+
+```{r}
+sum(c(1,2,3))
+```
+
+```{r}
+function_name <- function(inputs) {
+  output_value <- do-something(inputs)
+  return(output_value)
+}
+```
+
+```{r}
+{
+  a = 2
+  b = 3
+  a + b
+}
+```
+
+```{r}
+calc_shrub_vol <- function(length, width, height) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+calc_shrub_vol(0.8, 1.6, 2.0)
+shrub_vol <- calc_shrub_vol(0.8, 1.6, 2.0)
+```
+
+## How Functions Execute
+
+```{r}
+calc_shrub_vol <- function(length, width, height) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+shrub_vol <- calc_shrub_vol(0.8, 1.6, 2.0)
+```
+
+## Setting Default Values for Arguments
+
+```{r}
+calc_shrub_vol <- function(length, width, height = 1) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+calc_shrub_vol(0.8, 1.6, 2.0)
+calc_shrub_vol(0.8, 1.6)
+```
+
+## When To Use Named And Unnamed Arguments
+
+```{r}
+calc_shrub_vol <- function(length, width, height = 1) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+calc_shrub_vol(0.8, 1.6, 2.0)
+calc_shrub_vol(0.8, 1.6)
+calc_shrub_vol(length = 0.8, width = 1.6, height = 2.0)
+calc_shrub_vol(height = 2.0, length = 0.8, width = 1.6)
+calc_shrub_vol(0.8, 1.6, height = 2.0)
+```
+
+## Combining Functions
+
+```{r}
+calc_shrub_vol <- function(length, width, height = 1) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+est_shrub_mass <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+shrub_volume <- calc_shrub_vol(0.8, 1.6, 2.0)
+shrub_mass <- est_shrub_mass(shrub_volume)
+```
+
+```{r}
+library(magrittr)
+shrub_mass <- calc_shrub_vol(0.8, 1.6, 2.0) %>% 
+  est_shrub_mass()
+```
+
+```{r}
+shrub_mass <- est_shrub_mass(calc_shrub_vol(0.8, 1.6, 2.0))
+```
+
+## Calling Functions From Inside Other Functions.
+
+```{r}
+calc_shrub_vol <- function(length, width, height = 1) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+est_shrub_mass <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+est_shrub_mass_dim <- function(length, width, height = 1) {
+  volume <- calc_shrub_vol(length, width, height)
+  mass <- est_shrub_mass(volume)
+  return(mass)
+}
+```
+
+```{r}
+est_shrub_mass_dim(0.8, 1.6, height = 2.0)
+```
+
+## RStudio Tips and Tricks for Working With Functions
+
+```{r}
+calc_shrub_vol <- function(length, width, height = 1) {
+  area <- length * width
+  volume <- area * height
+  return(volume)
+}
+```
+
+```{r}
+est_shrub_mass <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+est_shrub_mass_dim <- function(length, width, height = 1) {
+  volume <- calc_shrub_vol(length, width, height)
+  mass <- est_shrub_mass(volume)
+  return(mass)
+}
+```
+
+```{r}
+est_shrub_mass_dim(0.8, 1.6, height = 2.0)
+```
