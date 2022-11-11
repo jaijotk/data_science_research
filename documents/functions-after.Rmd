@@ -1,0 +1,23 @@
+---
+title: "functions-after.Rmd"
+author: "Jai Jot Kaur"
+date: "11/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+If surveys.csv, species.csv, and plots.csv are not available in your workspace download them, and load them into R using read.csv().
+
+```{r}
+surveys <- read.csv("../data-raw/surveys.csv")
+species <- read.csv("../data-raw/species.csv")
+plots <- read.csv("../data-raw/plots.csv")
+```
+
+Write a function that:
+Takes three arguments - a data frame (the combined table created before), a genus name, and a species name,
+Uses functions from the dplyr package to produce a data frame with two columns: year and count, where count is the number of individuals (i.e., the number of rows) for the species indicated by genus and species in that year,
+Returns the resulting data frame. Note that this data frame is a time series by year.
