@@ -315,26 +315,29 @@ a) When Stegosauria is greater than 8 meters long use the equation above.
 b) When it is less than 8 meters long use a = 8.5 and b = 2.8.
 c) Run the function for a Stegosauria that is 6 meters long.
 ```{r}
-get_mass_from_length_by_name <- function(length, dinosaur_name) {
-  
-  if (dinosaur_name == "Stegosauria") {
-    a <- 10.95
-    b <- 2.64
-  } else if (dinosaur_name == "Theropoda") {
-    a <- 0.73
-    b <- 3.63
-  } else if (dinosaur_name == "Sauropoda") {
-    a <- 214.44
-    b <- 1.46 
-  } else {
-    message("No known estimation for ", dinosaur_name)
-    return(NA)
-  }
-  mass <- get_mass_from_length(length = length, a = a, b = b)
-  return(mass)
-}
+get_mass_from_length_by_name = function(length,dinosaur_name) {
+   if (dinosaur_name == "Stegosauria"& length > 8) {
+     a <- 10.95 
+     b <- 2.64 
+    } else if (dinosaur_name == "Stegosauria" & length < 8) {
+     a <- 8.5
+     b <- 2.8
+   } else if (dinosaur_name == "Theropoda") {
+     a <- 0.73
+     b <- 3.63
+   } else if (dinosaur_name == "Sauropoda") {
+     a <- 214.44
+     b <- 1.46
+   } else { 
+   message("No known estimation for ", dinosaur_name)
+   return(NA)
+   }
+ mass<- get_mass_from_length(length = length, a = a, b = b )
+ return(mass)
+}  
 
-get_mass_from_length_by_name(dinosaur_name = "Stegosauria", length = 10)
+get_mass_from_length_by_name(dinosaur_name = "Stegosauria", length = 6)
+# 1283.047
 ```
 
 
