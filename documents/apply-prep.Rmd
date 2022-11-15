@@ -1,0 +1,171 @@
+---
+title: "apply-prep.Rmd"
+author: "Jai Jot Kaur"
+date: "11/15/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reusing code - Apply functions
+
+## Introduction to repeating things in R
+
+```{r}
+est_mass <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+est_mass(1.6)
+est_mass(5.6)
+```
+
+## Using vectorized functions
+
+```{r}
+est_mass <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+est_mass(1.6)
+est_mass(5.6)
+```
+
+```{r}
+c(1, 2, 3) * 2
+volumes <- c(1.6, 5.6, 3.1)
+est_mass(volumes)
+```
+
+```{r}
+# install.packages("stringr")
+library(stringr)
+str_to_sentence(c("dipodomys", "chaetodipus"))
+genus <- c("dipodomys", "chaetodipus", "dipodomys")
+species <- c("ordii", "baileyi", "spectabilis")
+```
+
+```{r}
+combine_genus_species <- function(genus, species) {
+  genus_cap <- str_to_sentence(genus)
+  genus_species <- paste(genus_cap, species)
+  return(genus_species)
+}
+combine_genus_species(genus, species)
+data <- data.frame(genus, species)
+combine_genus_species(data$genus, data$species)
+```
+
+## Apply functions
+
+```{r}
+library(stringr)
+```
+
+```{r}
+est_mass <- function(volume) {
+  if(volume > 5) {
+  mass <- 2.65 * volume^0.9
+  } else {
+    mass <- NA
+  }
+  return(mass)
+}
+```
+
+```{r}
+volumes <- c(1.6, 5.6, 3.1)
+# est_mass(volumes)
+sapply(volumes, est_mass)
+```
+
+```{r}
+c(est_mass(volumes[1]), est_mass(volumes[2]), est_mass(volumes[3]))
+```
+
+## The mapply function
+
+```{r}
+est_mass <- function(volume, veg_type) {
+  if(veg_type == "tree") {
+  mass <- 2.65 * volume^0.9
+  } else {
+    mass <- NA
+  }
+  return(mass)
+}
+```
+
+```{r}
+volumes <- c(1.6, 5.6, 3.1)
+veg_type <- c("shrub", "tree", "tree")
+```
+
+```{r}
+mapply(FUN = est_mass, volume = volumes, veg_type = veg_type)
+```
+
+## Combining functions with dplyr
+
+```{r}
+est_mass <- function(volume, veg_type) {
+  if(veg_type == "tree") {
+  mass <- 2.65 * volume^0.9
+  } else {
+    mass <- NA
+  }
+  return(mass)
+}
+```
+
+```{r}
+est_mass_vectorized <- function(volume) {
+  mass <- 2.65 * volume^0.9
+  return(mass)
+}
+```
+
+```{r}
+volumes <- c(1.6, 5.6, 3.1)
+veg_type <- c("shrub", "tree", "tree")
+plant_data <- data.frame(volumes, veg_type)
+```
+
+```{r}
+library(dplyr)
+plant_data %>% 
+  rowwise() %>% 
+  mutate(masses = est_mass(volumes, veg_type))
+```
+
+```{r}
+get_biomass <- function(volumes) {
+  masses <- est_mass_vectorized(volumes)
+  biomass <- sum(masses)
+  return(biomass)
+}
+get_biomass(volumes)
+```
+
+```{r}
+plant_data %>% 
+  group_by(veg_type) %>% 
+  summarize(biomass = get_biomass(volumes))
+```
+
+
+
+
+
+
+
