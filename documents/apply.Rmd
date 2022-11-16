@@ -55,6 +55,8 @@ dino_data %>%
   mutate(masses = mass_from_length(length, as, bs))
 ```
 
+## Exercise 2 
+
 Create a new version of your mass_from_length_theropoda() function from Part 1 of Exercise 1 called mass_from_length_max().
 This function should only calculate a mass if the value of length passed to the function is less than 20.
 If length is greater than 20, return NA instead.
@@ -76,7 +78,7 @@ Use sapply() and this new function to estimate the mass for the theropoda_length
 sapply(theropoda_lengths, mass_from_length_max)
 ```
 
-# A Data Set of Dinosaur Lengths
+## Exercise 3: A Data Set of Dinosaur Lengths
 
 Download the CSV file of data on dinosaur lengths with species names into your data folder and import it using read.csv()
 ```{r}
