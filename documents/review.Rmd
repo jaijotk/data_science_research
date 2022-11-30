@@ -1,0 +1,77 @@
+---
+title: "Review"
+author: "Jai Jot Kaur"
+date: "11/29/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load or Download a File?
+
+Write a conditional statement that checks if surveys.csv exists in the working directory, if it doesn’t then downloads it from https://ndownloader.figshare.com/files/2292172 using download.file(), and finally loads the file into a data frame and displays the first few rows using the head() function. The url needs to be in quotes since it is character data.
+
+```{r}
+survey.list <- list.files("/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw")
+any(survey.list)
+library(stringr) 
+str_detect(list.files("/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw"), "surveys.csv")
+is.element("surveys.csv", list.files("/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw"))
+??str_detect
+getwd()
+"a" == c("a", "b", "c")
+?list.files
+
+if (is.element("surveys.csv", survey.list)) {
+  print("The file surveys.csv is already downloaded")
+  } else {
+    print("The file is not downloaded")
+  }
+# downloads it from https://ndownloader.figshare.com/files/2292172 using download.file()
+    download.file("https://ndownloader.figshare.com/files/2292172", "../data-raw/surveys-download.csv")
+# loads the file into a data frame
+    surveydataframe <- read.csv("../data-raw/surveys-download.csv")
+# displays the first few rows using the head() function 
+     head(surveydataframe)
+```
+
+Make a version of this conditional statement that is a function, where the name of the file is the first argument and the link for downloading the file is the second argument.
+The function should return the resulting data frame.
+Add some documentation to the top of the function describing what it does.
+Call this function using “species.csv” as the file name and https://ndownloader.figshare.com/files/3299483 as the link. Print the first few rows of the resulting data frame using head().
+
+```{r}
+# This function tests if a file is in the data raw directory and if not, it downloads it and reads it as data frame
+
+reading_csv <- function(file_name, link) {
+  
+# 1. Test if file is in the data-raw folder 
+  # file_name <- "species.csv"
+  test <- !is.element(file_name, list.files(path = "../data-raw"))
+  download.file(link, "../data-raw/file")
+  
+# 2. If test is FALSE, download the file
+  if(test) {
+    
+    # Option 1: save it with a random name:
+    # download.file(url = file_link, destfile = "../data-raw/temporary.csv")
+    # result <-  read.csv(file = "../data-raw/temporary.csv")
+    
+    # Option 2: save it eith the name given in file name:
+    destination_file <- stringr:: str_c("../data-raw", file_name)
+    download.file(url = link, destfile = destination_file)
+    result <- read.csv(file = destination_file)
+   return(result)
+  }
+  
+}
+
+```
+
+```{r}
+reading_csv(file_name = "species.csv", link = "https://ndownloader.figshare.com/files/3299483")
+```
