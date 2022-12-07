@@ -76,18 +76,132 @@ reading_csv <- function(file_name, link) {
 reading_csv(file_name = "species.csv", link = "https://ndownloader.figshare.com/files/3299483")
 ```
 
+## Multi-file Analysis
+
+If individual_collar_data.zip is not already in your working directory download the zip file using download.file()
 ```{r}
-list.files(path = "../data-raw/.")
+list_of_files <- list.files(path = "../data-raw/.")
 files_present <- is.element("individual_collar_data.zip", list_of_files)
 
 file_name <- "individual_collar_data.zip"
 
-file_present <- 
-  
-if(!file_present) {
+
+if(!files_present) {
   download.file("http://www.datacarpentry.org/semester-biology/data/individual_collar_data.zip", "../data-raw/individual_collar_data.zip")
 }
 
 library(stringr)
 str_c("../data-raw/", file_name)
+```
+
+Unzip it using unzip()
+```{r}
+# dir.create(path = "../data-raw/individual_collar_data")
+unzip("../data-raw/individual_collar_data.zip", exdir = "../data-raw/individual_collar_data")
+```
+
+Obtain a list of all of the files with file names matching the pattern "collar-data-.*.txt" (using list.files())
+```{r}
+collar_data_files <- list.files("/Users/jaijotkaur/Desktop/BIO197/data_science_research/data-raw", "collar-data-.*.txt")
+```
+
+Use a loop to load each of these files into R and make a line plot (using geom_path()) for each file with long on the x axis and lat on the y axis. Graphs, like other types of output, won’t display inside a loop unless you explicitly display them, so you need put your ggplot() command inside a print() statement. Include the name of the file in the graph as the graph title using labs()
+```{r}
+# load file
+read.csv(file = "../data-raw/individual_collar_data/collar-data-J10-2016-02-26.txt")
+
+library(ggplot2)
+
+for (i in collar_data_files) {
+  print(i)
+  collar_data_table <- read.csv(file = i)
+  # print(head(collar_data_table))
+  ggplot(collar_data_table, aes(x = long, y = lat)) +
+    labs(title = i) +
+    geom_path() -> collar_data_graph
+  print(collar_data_graph)
+}
+```
+
+Add code to the loop to calculate the minimum and maximum latitude in the file, and store these values, along with the name of the file, in a data frame. Show the data frame as output.
+
+Solution 1, using empty vectors
+```{r}
+all_min <- vector()
+all_max <- vector()
+length(all_min)
+length(all_max)
+file_name <- vector()
+?read.csv
+for (i in collar_data_files) {
+  print(i)
+  collar_data_table <- read.csv(str_c("../data-raw/individual_collar_data/", i))
+  file_name <- c(file_name, i)
+  min_lat <- min(collar_data_table[, "lat"])
+  # min_lat <- min(collar_data_table$lat)
+  all_min <- c(all_min, min_lat)
+  print(all_min)
+  max_lat <- max(collar_data_table[, "lat"])
+  # max_lat <- max(collar_data_table$lat)
+  all_max <- c(all_max, max_lat)
+  print(all_max)
+}
+
+minmax_dataframe <- data.frame(file_name, all_min, all_max)
+minmax_dataframe
+```
+
+Solution 2, using vectors of a predetermined length
+
+```{r}
+
+#  create vectors of a certain length 
+
+all_min_lat <- vector(mode = "numeric", length = length(collar_data_files))
+all_max_lat <- all_min_lat
+all_file_name <- all_min_lat
+length(all_min)
+length(all_max)
+all_file_name
+for (i in 1:length(collar_data_files)) {
+  file_name_and_path <- str_c("../data-raw/individual_collar_data/", collar_data_files[i])
+  all_file_name[i] <- file_name_and_path
+  print(file_name_and_path)
+  collar_data_table <- read.csv(file = file_name_and_path)
+  min_lat <- min(collar_data_table$lat)
+  all_min_lat[i] <- min_lat
+  max_lat <- max(collar_data_table$lat)
+  all_max_lat[i] <- max_lat
+  
+  print(all_max_lat)
+  print(all_min_lat)
+}
+length(file_name_and_path)
+vector_minmaxdataframe <- data.frame(all_file_name, all_min_lat, all_max_lat)
+vector_minmaxdataframe
+```
+
+Extra. If you’re interested in seeing another application of for loops, check out the code used to simulate the data for this exercise using for loops.
+```{r}
+individuals = paste(c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'), c(1:10), sep = "")
+for (individual in individuals) {
+    lat = vector("numeric", 24)
+    long = vector("numeric", 24)
+    lat[1] = rnorm(1, mean = 26, sd = 2)
+    long[1] = rnorm(1, mean = -35, sd = 3)
+    for (i in 2:24) {
+        lat[i] = lat[i - 1] + rnorm(1, mean = 0, sd = 1)
+        long[i] = long[i - 1] + rnorm(1, mean = 0, sd = 1)
+    }
+    times = seq(from=as.POSIXct("2016-02-26 00:00", tz="UTC"),
+                to=as.POSIXct("2016-02-26 23:00", tz="UTC"),
+                by="hour")  
+    df = data.frame(date = "2016-02-26",
+                    collar = individual,
+                    time = times,
+                    lat = lat,
+                    long = long)
+    write.csv(df, paste("collar-data-", individual, "-2016-02-26.txt", sep = ""))
+}
+zip("data/individual_collar_data.zip", list.files(pattern = "collar-data-[A-Z][0-9]+-.*"))
 ```
