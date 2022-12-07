@@ -75,3 +75,19 @@ reading_csv <- function(file_name, link) {
 ```{r}
 reading_csv(file_name = "species.csv", link = "https://ndownloader.figshare.com/files/3299483")
 ```
+
+```{r}
+list.files(path = "../data-raw/.")
+files_present <- is.element("individual_collar_data.zip", list_of_files)
+
+file_name <- "individual_collar_data.zip"
+
+file_present <- 
+  
+if(!file_present) {
+  download.file("http://www.datacarpentry.org/semester-biology/data/individual_collar_data.zip", "../data-raw/individual_collar_data.zip")
+}
+
+library(stringr)
+str_c("../data-raw/", file_name)
+```
