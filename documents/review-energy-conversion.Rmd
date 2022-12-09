@@ -24,7 +24,7 @@ convert_energy_units <- function(energy_value, input_unit, output_unit) {
   energy_in_kj <- energy_value/1000
   print(energy_in_kj)
   } else if (input_unit == "J" & output_unit == "KCAL") {
-  KCAL <- energy_value/4184
+  energy_in_kcal <- energy_value/4184
   print(energy_in_kcal)
   } else if (input_unit == "CAL" & output_unit == "J") {
    energy_in_j <- energy_value * 4.1868  
@@ -69,3 +69,47 @@ energy_in_erg <- convert_energy_units(one_kcal, "KCAL", "ERG")
 # "Sorry, I don’t know how to convert"
 ```
 
+Make the function more efficient, and instead of writing an individual conversion between each of the different units (which requires 12 if statements) you could choose to convert all of the input units to a common scale and then convert from that common scale to the output units. This approach is especially useful if you need to add new units later.
+
+Solution1: Creating two functions independently and then combining them
+```{r}
+# difference between print and return inside function
+# cleaner way to print message inside function is the function message. print function can be sued to generate an output for the function; tis is not efficent as using a simple return. Using the return can allow more complcicated things to be returned such as lists. 
+convert_to_j <- function(energy_value, input_unit, output_unit) {
+  
+  # Convert Joules to output_unit
+  if (input_unit == "CAL") {
+   energy_in_j <- energy_value * 4.1868  
+   return(energy_in_j)
+  } else if (input_unit == "KCAL") {
+    energy_in_j <- energy_value * 4186.8
+    return(energy_in_j)
+  }  else if (input_unit == "KJ") { 
+    energy_in_j <- energy_value*1000
+    return(energy_in_j)
+  }  else {
+    message("Sorry, I don’t know how to convert", input_unit)
+    return(NA)
+  }
+}
+  
+convert_energy_efficient <- function(energy_value, input_unit, output_unit) {
+  
+   # Convert input to J
+ energy_in_joules <- convert_to_j(energy_value, input_unit) 
+# convert Joules to output_unit
+   if (output_unit == "CAL") {
+    energy <- energy_in_joules/4.1868 
+  } else if (output_unit == "KJ") {
+  energy <- energy_in_joules/1000
+  } else if (output_unit == "KCAL") {
+  energy <- energy_in_joules/4186.8
+  }
+ return(energy)
+}
+
+convert_energy_efficient(1200, "CAL", output_unit = "KCAL")
+# 1.2
+```
+
+Solution22: Writing all the code inside one single function

@@ -48,16 +48,19 @@ volume = 0.5 * HEIGHT^0.6 * pi * AXIS_1 * AXIS_2
 Write a function called tree_volume_calc() that calculates the canopy volume for the Acacia species in the dataset. To do so, use an if statement in combination with the str_detect() function from the stringr R package. The code str_detect(SPECIES, "Acacia") will return TRUE if the string stored in this variable contains the word “Acacia” and FALSE if it does not. This function will have to take the following arguments as input: SPECIES, HEIGHT, AXIS_1, AXIS_2. Then run the following line:
 
 ```{r}
+library(stringr)
 tree_volume_calc <- function(SPECIES, HEIGHT, AXIS_1, AXIS_2) {
-  if (SPECIES == "Acacia") {
-    str_detect(SPECIES, "Acacia")
-  }
+  if (str_detect(SPECIES, "Acacia")) {
   volume = 0.16 * HEIGHT^0.8 * pi * AXIS_1 * AXIS_2
-  return(TRUE)
-}
-
+  print(TRUE)
+  return(volume)
+  } else {
+   print(FALSE)
+ }
+} 
 tree_volume_calc("Acacia_brevispica", 2.2, 3.5, 1.12)
 # TRUE
+# 3.702491
 ```
 
 Write a function called tree_volume_calc() that calculates the canopy volume for the Acacia species in the dataset. To do so, use an if statement in combination with the str_detect() function from the stringr R package. The code str_detect(SPECIES, "Acacia") will return TRUE if the string stored in this variable contains the word “Acacia” and FALSE if it does not. This function will have to take the following arguments as input: SPECIES, HEIGHT, AXIS_1, AXIS_2. Then run the following line:
@@ -66,19 +69,28 @@ Expand this function to additionally calculate canopy volumes for other types of
 
 ```{r}
 tree_volume_calc <- function(SPECIES, HEIGHT, AXIS_1, AXIS_2) {
-  if (SPECIES == "Acacia") {
-    str_detect(SPECIES, "Acacia")
+  if  (str_detect(SPECIES, "Acacia")) {
   volume = 0.16 * HEIGHT^0.8 * pi * AXIS_1 * AXIS_2
-  } else if (SPECIES == "Balanites") {
+  print(TRUE)
+  } else if (str_detect(SPECIES, "Balanites")) {
   volume = 1.2 * HEIGHT^0.26 * pi * AXIS_1 * AXIS_2
+  print(TRUE)
 } else {
-  volume = 0.5 * HEIGHT^0.6 * pi * AXIS_1 * AXIS_2}
-return(TRUE)
+  volume = 0.5 * HEIGHT^0.6 * pi * AXIS_1 * AXIS_2 
+print(FALSE)}
+  return(volume)
 }
 
+
 tree_volume_calc("Acacia_brevispica", 2.2, 3.5, 1.12)
+# TRUE
+# 3.702491
 tree_volume_calc("Balanites", 2.2, 3.5, 1.12) 
+# TRUE
+# 18.14041
 tree_volume_calc("Croton", 2.2, 3.5, 1.12)
+# FALSE
+# 9.882335
 
 ```
 
@@ -95,18 +107,18 @@ tree_data %>%
 
 Write a function named get_growth() that takes two inputs, a vector of sizes and a vector of years, and calculates the average annual growth rate. Pseudo-code for calculating this rate is (size_in_last_year - size_in_first_year) / (last_year - first_year). Test this function by running get_growth(c(40.2, 42.6, 46.0), c(2020, 2021, 2022)).
 
-```{r.eval = FALSE}
-sizes <- vector()
-years <- vector()
+```{r}
 get_growth <- function(sizes, years) {
-  sizes <- c(size_in_last_year, size_in_first_year)
-  years <- c(first_year, last_year)
-  (size_in_last_year - size_in_first_year) / (last_year - first_year)
+  last_year <- max(years)
+  first_year <- min(years)
+  size_in_last_year <- sizes[which.max(years)]
+  size_in_first_year <- sizes[which.min(years)]
+ growth_rate <-  (size_in_last_year - size_in_first_year) / (last_year - first_year)
+ return(growth_rate)
 }
 
 get_growth(c(40.2, 42.6, 46.0), c(2020, 2021, 2022))
-# Error in get_growth(c(40.2, 42.6, 46), c(2020, 2021, 2022)) : 
-# object 'size_in_last_year' not found
+# 2.9
 ```
 
 
