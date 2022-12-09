@@ -2,7 +2,9 @@
 title: "loops-after.Rmd"
 author: "Jai Jot Kaur"
 date: "11/24/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -27,19 +29,19 @@ The code is reading the file, which is indicated by a link, and the sep = '/t' a
 ## Exercise 2: Tree volumes
 You want to estimate the crown volumes for the different tree species and have developed equations for species in the Acacia genus:
 
-```{r}
+```{r.eval = FALSE}
 volume = 0.16 * HEIGHT^0.8 * pi * AXIS_1 * AXIS_2
 ```
 
 and the Balanites genus:
 
-```{r}
+```{r.eval = FALSE}
 volume = 1.2 * HEIGHT^0.26 * pi * AXIS_1 * AXIS_2
 ```
 
 For all other genera you’ll use a general equation developed for any tree:
 
-```{r}
+```{r.eval = FALSE}
 volume = 0.5 * HEIGHT^0.6 * pi * AXIS_1 * AXIS_2
 ```
 
@@ -89,9 +91,23 @@ tree_data %>%
   mutate(VOLUME = tree_volume_calc(SPECIES, HEIGHT, AXIS_1, AXIS_2))
 ```
 
+# Exercise 3: Tree Growth
 
+Write a function named get_growth() that takes two inputs, a vector of sizes and a vector of years, and calculates the average annual growth rate. Pseudo-code for calculating this rate is (size_in_last_year - size_in_first_year) / (last_year - first_year). Test this function by running get_growth(c(40.2, 42.6, 46.0), c(2020, 2021, 2022)).
 
+```{r.eval = FALSE}
+sizes <- vector()
+years <- vector()
+get_growth <- function(sizes, years) {
+  sizes <- c(size_in_last_year, size_in_first_year)
+  years <- c(first_year, last_year)
+  (size_in_last_year - size_in_first_year) / (last_year - first_year)
+}
 
+get_growth(c(40.2, 42.6, 46.0), c(2020, 2021, 2022))
+# Error in get_growth(c(40.2, 42.6, 46), c(2020, 2021, 2022)) : 
+# object 'size_in_last_year' not found
+```
 
 
 
