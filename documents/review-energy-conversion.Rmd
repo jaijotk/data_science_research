@@ -1,0 +1,71 @@
+---
+title: "Review Energy Conversion Challenge"
+author: "Jai Jot Kaur"
+date: "12/8/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Write a function called convert_energy_units(energy_value, input_unit, output_unit) to convert units between the following energy values:
+Joules(J),
+Kilojoules(KJ),
+Calories(CAL),
+and Kilocalories (KCAL; this unit is used for labeling the amount of energy contained in food). A Kilojoule is 1000 Joules, a Calorie is 4.1868 Joules, a Kilocalorie is 4186.8 Joules. An example of a call to this function would look like:
+
+```{r}
+convert_energy_units <- function(energy_value, input_unit, output_unit) {
+  if (input_unit == "J" & output_unit == "CAL") {
+    energy_in_cal <- energy_value/4.184
+    print(energy_in_cal)
+  } else if (input_unit == "J" & output_unit == "KJ") {
+  energy_in_kj <- energy_value/1000
+  print(energy_in_kj)
+  } else if (input_unit == "J" & output_unit == "KCAL") {
+  KCAL <- energy_value/4184
+  print(energy_in_kcal)
+  } else if (input_unit == "CAL" & output_unit == "J") {
+   energy_in_j <- energy_value * 4.1868  
+   print(energy_in_j)
+  } else if (input_unit == "KCAL" & output_unit == "J") {
+    energy_in_j <- energy_value * 4186.8
+    print(energy_in_j)
+  }  else if (input_unit == "KJ" & output_unit == "J") { 
+    energy_in_j <- energy_value*1000
+    print(energy_in_j)
+  } else {
+    print("Sorry, I don’t know how to convert")
+  }
+}
+
+energy_in_cal <- 200
+energy_in_j <- convert_energy_units(energy_in_cal, "CAL", "J")
+# 837.36
+```
+
+Use your function to answer the following questions:
+What is the daily metabolic energy used by a human (~2500 KCALs) in Joules.
+```{r}
+metabolic_energy_in_kcal <- 2500
+metabolic_energy_in_j <- convert_energy_units(metabolic_energy_in_kcal, "KCAL", "J")
+# 10467000
+```
+
+How many times more energy does a common seal use than a human? The common seal uses ~52,500 KJ/day (Nagy et al. 1999). Use the daily human metabolic cost given above.
+```{r}
+seal_energy_in_kj <- 52500
+seal_energy_in_j <- convert_energy_units(seal_energy_in_kj, "KJ", "J")
+# 52500000
+seal_energy_in_j/metabolic_energy_in_j
+# 5.015764
+```
+
+How many ergs (ERG) are there in one kilocalorie. Since we didn’t include the erg conversion this should trigger our ‘don’t know how to convert’ message.
+```{r}
+one_kcal <- 1
+energy_in_erg <- convert_energy_units(one_kcal, "KCAL", "ERG")
+# "Sorry, I don’t know how to convert"
+```
+

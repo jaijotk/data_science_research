@@ -1,0 +1,93 @@
+---
+title: "Review = DNA or RNA"
+author: "Jai Jot Kaur"
+date: "12/8/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# DNA or RNA Iteration
+
+Write a function, dna_or_rna(sequence), that determines if a sequence of base pairs is DNA, RNA, or if it is not possible to tell given the sequence provided. Since all the function will know about the material is the sequence the only way to tell the difference between DNA and RNA is that RNA has the base Uracil ("u") instead of the base Thymine ("t"). Have the function return one of three outputs: "DNA", "RNA", or "UNKNOWN".
+```{r}
+"a" == "a"
+"a" == "b"
+"a" == "actgc"
+
+is.element("a", "a")
+is.element("a", "actgc")
+is.element("a", c("acgtc", "a", "tttgc"))
+
+str_detect("agtc", "a")
+
+sequences = c("ttgaatgccttacaactgatcattacacaggcggcatgaagcaaaaatatactgtgaaccaatgcaggcg", "gauuauuccccacaaagggagugggauuaggagcugcaucauuuacaagagcagaauguuucaaaugcau", "gaaagcaagaaaaggcaggcgaggaagggaagaagggggggaaacc", "guuuccuacaguauuugaugagaaugagaguuuacuccuggaagauaauauuagaauguuuacaacugcaccugaucagguggauaaggaagaugaagacu", "gauaaggaagaugaagacuuucaggaaucuaauaaaaugcacuccaugaauggauucauguaugggaaucagccggguc")
+```
+
+```{r}
+dna_or_rna <- function(sequences) {
+  if (str_detect(string = sequences, "t")) {
+  print("DNA")
+} else if (str_detect(string = sequences, "u")) {
+  print("RNA")
+  } else {
+    print("UNKNOWN")
+  }
+}
+```
+
+Use the function and a for loop to print the type of the sequences in the following list.
+```{r}
+for(i in sequences) {
+  dna_or_rna(i)
+  print(i)
+}
+
+# [1] "DNA"
+# [1] "RNA"
+# [1] "UNKNOWN"
+# [1] "RNA"
+# [1] "RNA"
+```
+Use the function and sapply to print the type of the sequences in the following list.
+```{r}
+sapply(X = sequences, FUN = dna_or_rna)
+
+# [1] "DNA"
+# [1] "RNA"
+# [1] "UNKNOWN"
+# [1] "RNA"
+# [1] "RNA"
+#                                # ttgaatgccttacaactgatcattacacaggcggcatgaagcaaaaatatactgtgaaccaatgcaggcg 
+#                                                                              #                    "DNA" 
+#                                # gauuauuccccacaaagggagugggauuaggagcugcaucauuuacaagagcagaauguuucaaaugcau 
+#                                                                              #                    "RNA" 
+#                                                        # gaaagcaagaaaaggcaggcgaggaagggaagaagggggggaaacc 
+#                                                                              #                "UNKNOWN" 
+# guuuccuacaguauuugaugagaaugagaguuuacuccuggaagauaauauuagaauguuuacaacugcaccugauc# agguggauaaggaagaugaagacu 
+#                                                                              #                    "RNA" 
+#                       # gauaaggaagaugaagacuuucaggaaucuaauaaaaugcacuccaugaauggauucauguaugggaaucagccggg# uc 
+#                                                                              #                    "RNA" 
+```
+
+Optional: For a little extra challenge make your function work with both upper and lower case letters, or even strings with mixed capitalization
+
+```{r}
+dna_or_rna <- function(sequences) {
+  sequence <- tolower(sequence)
+  if (str_detect(string = sequences, "t")) {
+  print("DNA")
+} else if (str_detect(string = sequences, "u")) {
+  print("RNA")
+  } else {
+    print("UNKNOWN")
+  }
+}
+
+# or add additional else if statements. 
+```
+
+Elaborate on the main difference between a for loop and a sapply function:
+The main difference between a for loop and a sapply function is that the sapply function only allows an individual to apply one function at a time, while the for loop allows several functions to be used at a time; this is why for loops are better for more complex and additional functions.
